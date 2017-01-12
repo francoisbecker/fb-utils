@@ -1,4 +1,4 @@
-# fbutils
+# fb-utils
 
 C++ utility functions and classes.
 
