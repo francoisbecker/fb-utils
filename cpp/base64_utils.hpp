@@ -58,6 +58,7 @@ namespace base64u
             case 1: lPadding = 3; break;
             case 2: lPadding = 2; break;
             case 3: lPadding = 1; break;
+            default: lPadding = 0; jassertfalse; break;
         }
         String lCompleted = pString.replaceCharacters("-_", "+/");
         lCompleted.append("===", lPadding);
@@ -84,6 +85,7 @@ namespace base64u
             case 1: lPadding = 3; break;
             case 2: lPadding = 2; break;
             case 3: lPadding = 1; break;
+            default: lPadding = 0; jassertfalse; break;
         }
         String lCompleted = pString.replaceCharacters("-_", "+/");
         lCompleted.append("===", lPadding);

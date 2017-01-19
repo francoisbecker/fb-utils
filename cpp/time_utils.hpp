@@ -71,7 +71,7 @@ namespace tu
         
         sscanf(time, "%s %d %d", s_month, &day, &year);
         
-        month = (strstr(month_names, s_month)-month_names)/3;
+        month = (int)(strstr(month_names, s_month)-month_names)/3;
         
         t.tm_mon = month;
         t.tm_mday = day;
