@@ -44,36 +44,23 @@ namespace mu
     T finvsqrt(T x)
     {
         assert(x >= (T)0); // caller is responsible for checking that
-        return (T)1 / std::sqrt(x);
+        return (T)1 / std::sqrt(x); // the compiler is expected to detect and optimize this,
+                                    // but /!\ that may not actually happen 
     }
-    /*template <>
-     float finvsqrt(float x)
-     {
-     long i;
-     float x2, y;
-     const float threehalfs = 1.5F;
-     
-     x2 = x * 0.5F;
-     y  = x;
-     i  = * ( long * ) &y;                       // evil floating point bit level hacking
-     i  = 0x5f3759df - ( i >> 1 );               // what the?
-     y  = * ( float * ) &i;
-     y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
-     //	y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
-     
-     return y;
-     } // see https://en.wikipedia.org/wiki/Fast_inverse_square_root
-     // TODO: unit tests!
-     */
-    
     
     //==============================================================================
+    /**
+     Check if an angle is in )-π,π)
+     */
     inline bool isDomainAngle(float pAngle)
     {
         return ((pAngle > - M_PIf) && (pAngle <= M_PIf));
     }
     
     //==============================================================================
+    /**
+     Check if an angle is in (-π,π)
+     */
     inline bool isDomainAnglePermissive(float pAngle)
     {
         return ((pAngle >= - M_PIf) && (pAngle <= M_PIf));
@@ -81,7 +68,7 @@ namespace mu
     
     //==============================================================================
     /**
-     Get an angle in the domain )-π,π) provided the input is in the domain )-3π,3π)
+     Get an angle in )-π,π) provided the input is in )-3π,3π)
      */
     inline float domainAngleSimple(float pAngle)
     {
@@ -98,18 +85,18 @@ namespace mu
     }
     
     //==============================================================================
+    /**
+     Get an angle in )-π,π)
+     */
     inline float domainAngle(float pAngle)
     {
-        while (pAngle > M_PIf)
+        float lAngle = std::remainder(pAngle, 2.f * M_PIf);
+        if (lAngle <= -M_PIf) // TODO: change the domain so as to avoid this
         {
-            pAngle -= 2.f * M_PIf;
+            lAngle += 2.f * M_PIf;
         }
-        while (pAngle <= - M_PIf)
-        {
-            pAngle += 2.f * M_PIf;
-        }
-        assert(isDomainAngle(pAngle));
-        return pAngle;
+        assert(isDomainAngle(lAngle));
+        return lAngle;
     }
     
     //==============================================================================
