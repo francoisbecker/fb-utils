@@ -44,7 +44,7 @@ public:
     AzimuthRotary (const String& componentName)
     : Slider (componentName)
     {
-        setDoubleClickReturnValue(true, 0.f);
+        setDoubleClickReturnValue(true, 0.);
         setSliderStyle (Slider::Rotary); // TODO: support Slider::RotaryHorizontalVerticalDrag;
         setRotaryParameters({M_PIf, 3.f * M_PIf, false});
     }
