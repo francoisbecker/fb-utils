@@ -47,6 +47,7 @@ public:
         setDoubleClickReturnValue(true, 0.);
         setSliderStyle (Slider::Rotary); // TODO: support Slider::RotaryHorizontalVerticalDrag;
         setRotaryParameters({M_PIf, 3.f * M_PIf, false});
+        setMouseCursor(MouseCursor::CrosshairCursor);
     }
     double proportionOfLengthToValue (double proportion) override
     {
