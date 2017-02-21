@@ -132,9 +132,9 @@ namespace mu
     
     //==============================================================================
     template <typename T>
-    bool inRange(T value, T low, T high)
+    constexpr bool inRange(T value, T low, T high)
     {
-        assert(low <= high);
+        //assert(low <= high);
         return value >= low && value <= high;
     }
     
@@ -170,23 +170,22 @@ namespace mu
     
     //==============================================================================
     template<typename T>
-    T dBToGain(T pDB)
+    constexpr T dBToGain(T pDB)
     {
         return std::pow((T)10, pDB / (T)20);
     }
     
     //==============================================================================
     template <typename T>
-    T affineTransform(T fromMin, T fromMax, T toMin, T toMax, T value)
+    constexpr T affineTransform(T fromMin, T fromMax, T toMin, T toMax, T value)
     {
-        T fromMaxMinusFromMin = fromMax - fromMin;
-        assert(fromMaxMinusFromMin != (T)0);
-        return toMin + (toMax - toMin)*(value - fromMin)/fromMaxMinusFromMin;
+        //assert(fromMax - fromMin != (T)0);
+        return toMin + (toMax - toMin) * (value - fromMin) / (fromMax - fromMin);
     }
     
     //==============================================================================
     template<typename T>
-    T square(T pVal)
+    constexpr T square(T pVal)
     {
         return pVal * pVal;
     }
