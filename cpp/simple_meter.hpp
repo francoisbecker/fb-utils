@@ -64,10 +64,10 @@ public:
     void setForegroundColour(Colour pColour);
     void setBackgroundColour(Colour pColour);
     
+    void timerCallback() override;
+    
 private:
     void paint (Graphics& g) override;
-    
-    void timerCallback() override;
     
     SimpleMeter* mSimpleMeter;
     
