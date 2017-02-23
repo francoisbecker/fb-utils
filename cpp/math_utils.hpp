@@ -48,6 +48,7 @@ namespace mu
                                     // but /!\ that may not actually happen 
     }
     
+#if 0
     /**
      @copyright public domain
      */
@@ -79,6 +80,7 @@ namespace mu
         y = y * (1.5 - (x2 * y * y));
         return y;
     }
+#endif
     
     //==============================================================================
     /**
