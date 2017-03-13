@@ -43,6 +43,7 @@ class TimeLimitedFromBuild
 public:
     TimeLimitedFromBuild()
     : mLimit(tu::timeFromStringDate(getBuildInfo().mDate.c_str()) + DAYSAFTERBUILD * 24 * 3600)
+    , mIsOutdatedCached(isOutdated())
     {
     }
     
@@ -57,8 +58,14 @@ public:
         return difftime(lNow, mLimit) > 0.;
     }
     
+    bool isOutdatedCached() const
+    {
+        return mIsOutdatedCached;
+    }
+    
 private:
     std::time_t mLimit;
+    bool        mIsOutdatedCached;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeLimitedFromBuild)
 };
