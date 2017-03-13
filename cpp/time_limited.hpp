@@ -63,6 +63,12 @@ public:
         return mIsOutdatedCached;
     }
     
+    int getRemainingDays() const
+    {
+        std::time_t lNow = std::time(nullptr);
+        return - difftime(lNow, mLimit) / (24 * 3600);
+    }
+    
 private:
     std::time_t mLimit;
     bool        mIsOutdatedCached;
