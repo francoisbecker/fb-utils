@@ -1,5 +1,5 @@
 /**
- @file BuildInfo.cpp
+ @file build_info.cpp
  @author François Becker
 
 MIT License
