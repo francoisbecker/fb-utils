@@ -270,6 +270,19 @@ namespace mu
     {
         return 10.f * fast_log10(g);
     }
+    
+    //==============================================================================
+    template <typename T>
+    void boundsSafeGuard(T* pChannel, int pNumSamples)
+    {
+        for (int i = 0 ; i != pNumSamples ; ++i)
+        {
+            if (! std::isfinite(pChannel[i]))
+            {
+                pChannel[i] = (T)0;
+            }
+        }
+    }
 }
 
 #endif
