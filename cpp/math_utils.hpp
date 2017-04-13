@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include "math_float_constants.hpp"
 
+#include <cstdint>
 #include <cassert>
 
 #define DEG2RAD (M_PI / 180.)
