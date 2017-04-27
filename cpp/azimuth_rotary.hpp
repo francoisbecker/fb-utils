@@ -57,6 +57,24 @@ public:
     {
         return 1.0 - Slider::valueToProportionOfLength(value);
     }
+    void mouseDown (const MouseEvent& e) override
+    {
+        // TODO: windows port
+        if (e.mods.isCtrlDown() && e.mods.isCommandDown()) // PT automation menu
+        {
+            return;
+        }
+        Slider::mouseDown(e);
+    }
+    void mouseDoubleClick (const MouseEvent& e) override
+    {
+        // TODO: windows port
+        if (e.mods.isCtrlDown() && e.mods.isCommandDown()) // PT automation menu
+        {
+            return;
+        }
+        Slider::mouseDoubleClick(e);
+    }
 };
 
 #endif
