@@ -41,6 +41,11 @@ public:
     float getPeakAmplitudeAndReset();
     float getPeakDBAndReset();
     
+    void setName(String pName)
+    {
+        mName = pName;
+    }
+    
 private:
     Atomic<float> mPeak;
     String        mName;
@@ -48,6 +53,7 @@ private:
 
 class SimpleMeterComponent
 : public Component
+, public SettableTooltipClient
 , private Timer
 {
 public:
