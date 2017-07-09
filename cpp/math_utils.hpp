@@ -273,6 +273,21 @@ namespace mu
     }
     
     //==============================================================================
+    /**
+     @copyright public domain
+     */
+    inline int fastRoundToInt(double val)
+    {
+        union {double d; int i[2];} u;
+        u.d = val + 6755399441055744.;
+#ifdef __LITTLE_ENDIAN__
+        return (int)u.i[0];
+#else
+        return (int)u.i[1];
+#endif
+    }
+    
+    //==============================================================================
     template <typename T>
     void boundsSafeGuard(T* pChannel, int pNumSamples)
     {
