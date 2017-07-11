@@ -288,6 +288,56 @@ namespace mu
     }
     
     //==============================================================================
+    /**
+     Valid on [-Pi, Pi] with an abs error inferior to 0.001
+     */
+    inline float fastSin7(float x)
+    {
+        float x2 = x * x;
+        return x * (0.9992431032114582f + x2 * (- 0.16534994905656308f + x2 * (0.007873446865159112f - 0.00013964149131248947f * x2)));
+    }
+    
+    /**
+     Valid on [-Pi, Pi] with an abs error inferior to 0.00002
+     */
+    inline float fastSin9(float x)
+    {
+        float x2 = x * x;
+        return x * (0.9999819223196827f + x2 * (-0.1666117333491961f + x2 * (0.008301994234527911f + x2 * (- 0.00019154801461966623f + 2.0943656646398535e-6f * x2))));
+    }
+    
+    /**
+     Valid on [-Pi, Pi] with an abs error inferior to 0.003
+     */
+    inline float fastCos6(float x)
+    {
+        float x2 = x * x;
+        return 0.997357479120193f + x2 * (- 0.49360704701475366f + x2 * (0.03880981050760031f - 0.0009433852664416385f * x2));
+    }
+    
+    /**
+     Valid on [-Pi, Pi] with an abs error inferior to 0.0001
+     */
+    inline float fastCos8(float x)
+    {
+        float x2 = x * x;
+        return 1.f + x2 * (- 0.49992234392040313f + x2 * (0.0415611407831821f + x2 * (- 0.0013497862134738713f + 0.00001932349100797763f * x2)));
+    }
+    
+    //==============================================================================
+    /**
+     Branchless max
+     @copyright public domain
+     */
+    inline int32_t imax(int32_t a, int32_t b)
+    {
+        // signed for arithmetic shift
+        int32_t mask = a - b;
+        // mask < 0 means MSB is 1.
+        return a + ( ( b - a ) & ( mask >> 31 ) );
+    }
+    
+    //==============================================================================
     template <typename T>
     void boundsSafeGuard(T* pChannel, int pNumSamples)
     {
