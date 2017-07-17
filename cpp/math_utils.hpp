@@ -324,6 +324,21 @@ namespace mu
         return 1.f + x2 * (- 0.49992234392040313f + x2 * (0.0415611407831821f + x2 * (- 0.0013497862134738713f + 0.00001932349100797763f * x2)));
     }
     
+    /**
+     Abs error inferior to 0.0063
+     */
+    inline float fast_asin4_3(float x)
+    {
+        if (x >= 0.f)
+        {
+            return x * (1.0086092643578328f + x * (1353.5141891115013f + x * (- 2433.7944299113137f + 1080.1972306769444f * x))) / (1.f + x * (1360.966200347148f + x * (- 2532.1768321940885f + 1170.8022308154443f * x)));
+        }
+        else
+        {
+            return -fast_asin4_3(-x);
+        }
+    }
+    
     //==============================================================================
     /**
      Branchless max
@@ -344,6 +359,19 @@ namespace mu
         for (int i = 0 ; i != pNumSamples ; ++i)
         {
             if (! std::isfinite(pChannel[i]))
+            {
+                pChannel[i] = (T)0;
+            }
+        }
+    }
+    
+    //==============================================================================
+    template <typename T>
+    void manualFTZ(T* pChannel, int pNumSamples)
+    {
+        for (int i = 0 ; i != pNumSamples ; ++i)
+        {
+            if (! std::isnormal(pChannel[i]))
             {
                 pChannel[i] = (T)0;
             }
