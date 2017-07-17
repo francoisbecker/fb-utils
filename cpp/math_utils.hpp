@@ -32,6 +32,9 @@ SOFTWARE.
 
 #include <cstdint>
 #include <cassert>
+#if 0
+#include <algorithm>
+#endif
 
 #define DEG2RAD (M_PI / 180.)
 #define DEG2RADf (M_PIf / 180.f)
@@ -324,6 +327,40 @@ namespace mu
         return 1.f + x2 * (- 0.49992234392040313f + x2 * (0.0415611407831821f + x2 * (- 0.0013497862134738713f + 0.00001932349100797763f * x2)));
     }
     
+#if 0
+    /**
+     Abs error inferior to 0.0285
+     */
+    inline float fast_acos3(float x)
+    {
+        if (x < 0.f)
+        {
+            x = -x;
+            return M_PIf - std::sqrt(std::max(2.46613f + x * (- 3.10749f + x * (0.829702f - 0.189304f * x)), 0.f));
+        }
+        else
+        {
+            return std::sqrt(std::max(2.46613f + x * (- 3.10749f + x * (0.829702f - 0.189304f * x)), 0.f));
+        }
+    }
+    
+    /**
+     Abs error inferior to 0.003088
+     */
+    inline float fast_acos6(float x)
+    {
+        if (x < 0.f)
+        {
+            x = -x;
+            return M_PIf - std::sqrt(std::max(2.467398872441186f + x * (- 3.141386627677523f + x * (0.9967171941302226f + x * (- 0.5028268236419082f + x * (0.26579731018092995f + x * (- 0.107643464278355f + 0.02195297741551026f * x))))), 0.f));
+        }
+        else
+        {
+            return std::sqrt(std::max(2.467398872441186f + x * (- 3.141386627677523f + x * (0.9967171941302226f + x * (- 0.5028268236419082f + x * (0.26579731018092995f + x * (- 0.107643464278355f + 0.02195297741551026f * x))))), 0.f));
+        }
+    }
+#endif
+    
     /**
      Abs error inferior to 0.0063
      */
@@ -378,5 +415,86 @@ namespace mu
         }
     }
 }
+
+#if 0
+#include <iostream>
+#include <chrono>
+static struct sbench {
+    sbench()
+    {
+        /*
+         {
+         auto start = std::chrono::steady_clock::now();
+         float lAcc = 0.f;
+         for (unsigned int u = 0 ; u != 10000 ; ++u)
+         {
+         float lValue = -1.f + (float)(2*u)/10000;
+         lAcc += std::acos(lValue);
+         }
+         auto end = std::chrono::steady_clock::now();
+         // Store the time difference between start and end
+         auto diff = end - start;
+         std::cout << lAcc << " std::acos " << std::chrono::duration <double, std::nano> (diff).count() << " ns" << std::endl;
+         }
+         
+         {
+         auto start = std::chrono::steady_clock::now();
+         float lAcc = 0.f;
+         for (unsigned int u = 0 ; u != 10000 ; ++u)
+         {
+         float lValue = -1.f + (float)(2*u)/10000;
+         lAcc += mu::fast_acos6(lValue);
+         }
+         auto end = std::chrono::steady_clock::now();
+         // Store the time difference between start and end
+         auto diff = end - start;
+         std::cout << lAcc << " mu::fast_acos6 " << std::chrono::duration <double, std::nano> (diff).count() << " ns" << std::endl;
+         }
+         */
+        
+        {
+            auto start = std::chrono::steady_clock::now();
+            float lAcc = 0.f;
+            for (unsigned int u = 0 ; u != 10000 ; ++u)
+            {
+                float lValue = -1.f + (float)(2*u)/10000;
+                lAcc += std::asin(lValue);
+            }
+            auto end = std::chrono::steady_clock::now();
+            // Store the time difference between start and end
+            auto diff = end - start;
+            std::cout << lAcc << " std::asin " << std::chrono::duration <double, std::nano> (diff).count() << " ns" << std::endl;
+        }
+        
+        {
+            auto start = std::chrono::steady_clock::now();
+            float lAcc = 0.f;
+            for (unsigned int u = 0 ; u != 10000 ; ++u)
+            {
+                float lValue = -1.f + (float)(2*u)/10000;
+                lAcc += mu::fast_asin4_3(lValue);
+            }
+            auto end = std::chrono::steady_clock::now();
+            // Store the time difference between start and end
+            auto diff = end - start;
+            std::cout << lAcc << " mu::fast_asin4_3 " << std::chrono::duration <double, std::nano> (diff).count() << " ns" << std::endl;
+        }
+        
+        /*
+         float lMaxDiff = 0.f;
+         for (unsigned int u = 0 ; u != 10000 ; ++u)
+         {
+         float lValue = -1.f + (float)(2*u)/10000;
+         float lDiff = std::abs(std::acos(lValue) - mu::fast_acos6(lValue));
+         if (lDiff > lMaxDiff)
+         {
+         lMaxDiff = lDiff;
+         std::cout << lValue << " : " << lDiff << std::endl;
+         }
+         }
+         */
+    }
+} bench;
+#endif
 
 #endif
