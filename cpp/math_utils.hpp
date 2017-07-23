@@ -219,10 +219,24 @@ namespace mu
     }
     
     //==============================================================================
+    template <typename T>
+    constexpr T affineTransformLimited(T fromMin, T fromMax, T toMin, T toMax, T value)
+    {
+        return limitedRange(affineTransform(fromMin, fromMax, toMin, toMax, value), toMin, toMax);
+    }
+    
+    //==============================================================================
     template<typename T>
     constexpr T square(T pVal)
     {
         return pVal * pVal;
+    }
+    
+    //==============================================================================
+    template<typename T>
+    constexpr T cube(T pVal)
+    {
+        return pVal * pVal * pVal;
     }
     
     //==============================================================================
