@@ -368,6 +368,20 @@ namespace mu
     
     //==============================================================================
     template <typename T>
+    T minOverMax(T a, T b)
+    {
+        if (a < b)
+        {
+            return a / b;
+        }
+        else
+        {
+            return b / a;
+        }
+    }
+    
+    //==============================================================================
+    template <typename T>
     void boundsSafeGuard(T* pChannel, int pNumSamples)
     {
         for (int i = 0 ; i != pNumSamples ; ++i)
