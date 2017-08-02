@@ -32,10 +32,39 @@ SOFTWARE.
 #include <iostream>
 #include <chrono>
 
+/**
+ @class StopWatch
+ @brief Chronometer class. Has optionally a name and provides the method for
+        displaying the duration between the start() and stop() calls.
+ */
 class StopWatch
 {
+protected:
+    typedef std::ratio<1LL, 1LL> default_timeunit;
+    
+    template <typename TIMEUNIT>
+    const char* timeunit()
+    {
+        switch (TIMEUNIT::den)
+        {
+            case 1000000000LL:
+                return "ns";
+            case 1000000LL:
+                return "us";
+            case 1000LL:
+                return "ms";
+            case 1LL:
+                if (TIMEUNIT::num == 1LL)
+                {
+                    return "s";
+                }
+            default:
+                return "?";
+        }
+    }
+    
 public:
-    StopWatch(const std::string& pName)
+    StopWatch(const std::string& pName = "")
     : mName(pName)
     {
     }
@@ -50,16 +79,23 @@ public:
         mStop = std::chrono::steady_clock::now();
     }
     
-    void display()
+    template <typename TIMEUNIT = default_timeunit>
+    void display(std::ostream& pOutputStream = std::cout)
     {
         auto lDiff = mStop - mStart;
-        std::cout << mName << ": " << std::chrono::duration <double, std::nano> (lDiff).count() << " ns" << std::endl;
+        if (!mName.empty())
+        {
+            pOutputStream << mName << ": ";
+        }
+        pOutputStream << std::chrono::duration<double, TIMEUNIT>(lDiff).count()
+                      << " " << timeunit<TIMEUNIT>() << std::endl;
     }
     
+    template <typename TIMEUNIT = default_timeunit>
     void stopAndDisplay()
     {
         stop();
-        display();
+        display<TIMEUNIT>();
     }
     
     void rename(const std::string& pName)
@@ -79,11 +115,15 @@ protected:
     std::chrono::steady_clock::time_point mStop;
 };
 
-class StopWatchStarting
+/**
+ @class StopWatchStarted
+ @brief A StopWatch that is started as soon as it is intantiated.
+ */
+class StopWatchStarted
 : public StopWatch
 {
 public:
-    StopWatchStarting(const std::string& pName)
+    StopWatchStarted(const std::string& pName = "")
     : StopWatch(pName)
     {
         start();
