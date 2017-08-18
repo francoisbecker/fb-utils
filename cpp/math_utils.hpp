@@ -32,6 +32,7 @@ SOFTWARE.
 
 #include <cstdint>
 #include <cassert>
+#include <algorithm>
 
 #define DEG2RAD (M_PI / 180.)
 #define DEG2RADf (M_PIf / 180.f)
@@ -378,6 +379,64 @@ namespace mu
         {
             return b / a;
         }
+    }
+    
+    //==============================================================================
+    /**
+     Saturating arithmetics
+     */
+    inline uint8_t saturating_add(uint8_t pA, uint8_t pB)
+    {
+#if 1 // actually faster
+        int16_t lResult = (int16_t)pA + (int16_t)pB;
+        if (lResult > 255)
+            return 255;
+        else
+            return lResult;
+#else
+        uint16_t lResultMod = ((uint16_t)pA + (uint16_t)pB);
+        bool lCarry = lResultMod & 256;
+        return (lCarry * 255) | (!lCarry * lResultMod);
+#endif
+    }
+    
+    inline uint8_t saturating_subtract(uint8_t pA, uint8_t pB)
+    {
+#if 1 // actually faster
+        int16_t lResult = (int16_t)pA - (int16_t)pB;
+        if (lResult < 0)
+            return 0;
+        else
+            return lResult;
+#else
+        uint16_t lResultMod = ((uint16_t)pA - (uint16_t)pB);
+        bool lCarry = lResultMod & 32768;
+        return !lCarry * lResultMod;
+#endif
+    }
+    
+    //=============================================================================
+    /**
+     Sum of two decibel values
+     */
+    inline uint8_t fast_dBSum0_2(uint8_t pA, uint8_t pB)
+    {
+        float lDiff = std::abs((float)pA - (float)pB);
+        float lDelta = 54.8697f / (19.2149f + lDiff * (0.686395f + lDiff));
+        return std::max(pA, pB) + mu::fastRoundToInt(lDelta);
+    }
+    
+    inline uint8_t fast_dBSum0_5(uint8_t pA, uint8_t pB)
+    {
+        float lDiff = std::abs((float)pA - (float)pB);
+        float lDelta = 3.01055f / (1.f + lDiff * (0.166853f + lDiff * (0.0170169f + lDiff * (0.00188077f + lDiff * (- 0.000011882f + 0.0000114037f * lDiff)))));
+        return std::max(pA, pB) + mu::fastRoundToInt(lDelta);
+    }
+    
+    inline uint8_t approx_dBSum(uint8_t pA, uint8_t pB)
+    {
+        // simplified as the max of both values, sufficient in many cases
+        return std::max(pA, pB); // use branchless max if more efficient
     }
     
     //==============================================================================
