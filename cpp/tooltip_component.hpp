@@ -30,13 +30,34 @@ SOFTWARE.
 
 #include "JuceHeader.h"
 
+/**
+ @class TooltipProvider
+ */
+class TooltipProvider
+{
+public:
+    TooltipProvider()
+    {
+    }
+    
+    virtual ~TooltipProvider()
+    {
+    }
+    
+    virtual String getTipFor(Component* c) const = 0;
+};
+
+/**
+ @class TooltipComponent
+ */
 class TooltipComponent
 : public Label
 , private Timer
 {
 public:
-    explicit TooltipComponent ()
+    explicit TooltipComponent (const TooltipProvider* pTooltipProvider = nullptr)
     : Label("tooltip")
+    , mTooltipProvider(pTooltipProvider)
     {
         if (Desktop::getInstance().getMainMouseSource().canHover())
             startTimer (123);
@@ -64,14 +85,29 @@ private:
         displayTip (tip);
     }
     
-    static String getTipFor (Component* c)
+    virtual String getTipFor (Component* c)
     {
-        if (TooltipClient* const ttc = dynamic_cast<TooltipClient*> (c))
-            if (! c->isCurrentlyBlockedByAnotherModalComponent())
-                return ttc->getTooltip();
-        
-        return String();
+        String lTooltip;
+        if (mTooltipProvider)
+        {
+            lTooltip = mTooltipProvider->getTipFor(c);
+        }
+        if (lTooltip.isEmpty())
+        {
+            if (TooltipClient* const ttc = dynamic_cast<TooltipClient*> (c))
+            {
+                if (! c->isCurrentlyBlockedByAnotherModalComponent())
+                    return ttc->getTooltip();
+            }
+            return String();
+        }
+        else
+        {
+            return lTooltip;
+        }
     }
+    
+    const TooltipProvider* mTooltipProvider;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TooltipComponent)
 };
