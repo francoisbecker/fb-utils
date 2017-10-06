@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include <string>
 #include <vector>
+#include <sstream>
 
 namespace su
 {
@@ -61,6 +62,15 @@ namespace su
         
         return strings;
     }
+    
+    //==============================================================================
+    template<typename T>
+    const std::string convert_to_string(const T &v)
+    {
+        std::ostringstream ss;
+        ss << v;
+        return ss.str();
+    };
 }
 
 #endif
