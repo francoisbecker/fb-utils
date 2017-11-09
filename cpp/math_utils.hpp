@@ -39,6 +39,13 @@ SOFTWARE.
 #define RAD2DEG (180. / M_PI)
 #define RAD2DEGf (180.f / M_PIf)
 
+#if _MSC_VER
+#ifdef __LITTLE_ENDIAN__
+static_assert(false)
+#endif // __LITTLE_ENDIAN__
+#define __LITTLE_ENDIAN__   1   //  Windows is always little-endian
+#endif
+
 namespace mu
 {
     //==============================================================================
