@@ -30,9 +30,9 @@ SOFTWARE.
 
 #include "math_float_constants.hpp"
 
+#include <algorithm>
 #include <cstdint>
 #include <cassert>
-#include <algorithm>
 
 #define DEG2RAD (M_PI / 180.)
 #define DEG2RADf (M_PIf / 180.f)
@@ -196,7 +196,7 @@ namespace mu
     //==============================================================================
     inline int fftOrderFor(int pNumSamples)
     {
-        int v = nextPowerOf2(pNumSamples);  // find the number of trailing zeros in 32-bit v
+        unsigned int v = (unsigned int)nextPowerOf2(pNumSamples);  // find the number of trailing zeros in 32-bit v
         constexpr const int MultiplyDeBruijnBitPosition[32] =
         {
             0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8,
@@ -399,7 +399,7 @@ namespace mu
         if (lResult > 255)
             return 255;
         else
-            return lResult;
+            return (uint8_t)lResult;
 #else
         uint16_t lResultMod = ((uint16_t)pA + (uint16_t)pB);
         bool lCarry = lResultMod & 256;
@@ -414,7 +414,7 @@ namespace mu
         if (lResult < 0)
             return 0;
         else
-            return lResult;
+            return (uint8_t)lResult;
 #else
         uint16_t lResultMod = ((uint16_t)pA - (uint16_t)pB);
         bool lCarry = lResultMod & 32768;
@@ -430,14 +430,14 @@ namespace mu
     {
         float lDiff = std::abs((float)pA - (float)pB);
         float lDelta = 54.8697f / (19.2149f + lDiff * (0.686395f + lDiff));
-        return std::max(pA, pB) + mu::fastRoundToInt(lDelta);
+        return (uint8_t)(std::max(pA, pB) + mu::fastRoundToInt(lDelta));
     }
     
     inline uint8_t fast_dBSum0_5(uint8_t pA, uint8_t pB)
     {
         float lDiff = std::abs((float)pA - (float)pB);
         float lDelta = 3.01055f / (1.f + lDiff * (0.166853f + lDiff * (0.0170169f + lDiff * (0.00188077f + lDiff * (- 0.000011882f + 0.0000114037f * lDiff)))));
-        return std::max(pA, pB) + mu::fastRoundToInt(lDelta);
+        return (uint8_t)(std::max(pA, pB) + mu::fastRoundToInt(lDelta));
     }
     
     inline uint8_t approx_dBSum(uint8_t pA, uint8_t pB)

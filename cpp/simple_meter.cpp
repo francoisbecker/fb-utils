@@ -136,7 +136,7 @@ void SimpleMeterComponent::paint (Graphics& g)
     }
     
     float lNormalizedPeakDB = (mPeakDB + 144.f)/144.f;
-    float lSkewed = std::pow(lNormalizedPeakDB, 4);
+    float lSkewed = std::pow(lNormalizedPeakDB, 4.f);
     float lHeight = lSkewed * getHeight();
     
 #if 0

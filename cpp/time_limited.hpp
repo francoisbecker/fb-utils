@@ -66,7 +66,7 @@ public:
     int getRemainingDays() const
     {
         std::time_t lNow = std::time(nullptr);
-        return - difftime(lNow, mLimit) / (24 * 3600);
+        return (int)(- difftime(lNow, mLimit) / (24 * 3600));
     }
     
 private:
