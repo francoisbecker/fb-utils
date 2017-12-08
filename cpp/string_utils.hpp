@@ -71,6 +71,13 @@ namespace su
         ss << v;
         return ss.str();
     };
+    
+    //==============================================================================
+    bool hasEnding(const std::string& fullString, const std::string& ending)
+    {
+        return (fullString.length() >= ending.length())
+            && (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+    }
 }
 
 #endif
