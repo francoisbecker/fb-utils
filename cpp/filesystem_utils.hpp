@@ -37,7 +37,7 @@ SOFTWARE.
 #include <dirent.h>
 
 //==============================================================================
-PossibleError<std::vector<std::string> > listDir(const std::string& pPath, const std::string& pEnding = "")
+inline PossibleError<std::vector<std::string> > listDir(const std::string& pPath, const std::string& pEnding = "")
 {
     DIR* lDir = opendir(pPath.c_str());
     if (!lDir)
