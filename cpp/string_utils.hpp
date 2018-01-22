@@ -32,51 +32,78 @@ SOFTWARE.
 #include <vector>
 #include <sstream>
 
-namespace su
+namespace fbu
 {
-    //==============================================================================
-    inline void find_and_replace(std::string& source, std::string const& find, std::string const& replace)
+    namespace string
     {
-        for(std::string::size_type i = 0; (i = source.find(find, i)) != std::string::npos;)
+        //==============================================================================
+        inline void find_and_replace(std::string& source, std::string const& find, std::string const& replace)
         {
-            source.replace(i, find.length(), replace);
-            i += replace.length();
-        }
-    }
-    
-    //==============================================================================
-    inline std::vector<std::string> string_split(std::string pString, const char* pDelimiter)
-    {
-        std::vector<std::string> strings;
-        
-        std::string::size_type pos = 0;
-        std::string::size_type prev = 0;
-        while ((pos = pString.find(pDelimiter, prev)) != std::string::npos)
-        {
-            strings.push_back(pString.substr(prev, pos - prev));
-            prev = pos + 1;
+            for(std::string::size_type i = 0; (i = source.find(find, i)) != std::string::npos;)
+            {
+                source.replace(i, find.length(), replace);
+                i += replace.length();
+            }
         }
         
-        // To get the last substring (or only, if delimiter is not found)
-        strings.push_back(pString.substr(prev));
+        //==============================================================================
+        inline std::vector<std::string> string_split(std::string pString, const char* pDelimiter)
+        {
+            std::vector<std::string> strings;
+            
+            std::string::size_type pos = 0;
+            std::string::size_type prev = 0;
+            while ((pos = pString.find(pDelimiter, prev)) != std::string::npos)
+            {
+                strings.push_back(pString.substr(prev, pos - prev));
+                prev = pos + 1;
+            }
+            
+            // To get the last substring (or only, if delimiter is not found)
+            strings.push_back(pString.substr(prev));
+            
+            return strings;
+        }
         
-        return strings;
-    }
-    
-    //==============================================================================
-    template<typename T>
-    const std::string convert_to_string(const T &v)
-    {
-        std::ostringstream ss;
-        ss << v;
-        return ss.str();
-    };
-    
-    //==============================================================================
-    inline bool hasEnding(const std::string& fullString, const std::string& ending)
-    {
-        return (fullString.length() >= ending.length())
+        //==============================================================================
+        template<typename T>
+        const std::string convert_to_string(const T &v)
+        {
+            std::ostringstream ss;
+            ss << v;
+            return ss.str();
+        };
+        
+        //==============================================================================
+        inline bool hasEnding(const std::string& fullString, const std::string& ending)
+        {
+            return (fullString.length() >= ending.length())
             && (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+        }
+        
+        //==============================================================================
+        inline std::string removeEnding(const std::string& pString, const std::string& pEnding)
+        {
+            size_t lFound = pString.rfind(pEnding);
+            if (lFound != std::string::npos)
+            {
+                std::string lCopy(pString);
+                return lCopy.erase(lFound);
+            }
+            return pString;
+        }
+        
+#if FBU_UNIT_TESTS
+        // TODO: move this to a unit test file
+        static struct c_ut
+        {
+            c_ut()
+            {
+                assert(removeEnding("aaaaa.bbb", ".bbb") == "aaaaa");
+                assert(removeEnding("aaaaa.bbb", ".ccc") == "aaaaa.bbb");
+            }
+        } ut;
+#endif
     }
 }
 

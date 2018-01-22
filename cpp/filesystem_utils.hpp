@@ -36,35 +36,51 @@ SOFTWARE.
 
 #include <dirent.h>
 
-//==============================================================================
-inline PossibleError<std::vector<std::string> > listDir(const std::string& pPath, const std::string& pEnding = "")
+namespace fbu
 {
-    DIR* lDir = opendir(pPath.c_str());
-    if (!lDir)
+    namespace filesystem
     {
-        return error(errno);
-    }
-    std::vector<std::string> lList;
-    if (pEnding.empty())
-    {
-        while (struct dirent* lDirEntry = readdir(lDir))
+        //==============================================================================
+        /**
+         Will be needed until C++17
+         */
+#ifdef _WIN32
+        constexpr const char* separator = "\\";
+#else
+        constexpr const char* separator = "/";
+#endif
+        
+        //==============================================================================
+        inline PossibleError<std::vector<std::string> > listDir(const std::string& pPath, const std::string& pEnding = "")
         {
-            lList.push_back(lDirEntry->d_name);
-        }
-    }
-    else
-    {
-        while (struct dirent* lDirEntry = readdir(lDir))
-        {
-            std::string lEntryName = lDirEntry->d_name;
-            if (su::hasEnding(lEntryName, pEnding))
+            DIR* lDir = opendir(pPath.c_str());
+            if (!lDir)
             {
-                lList.push_back(lEntryName);
+                return error(errno);
             }
+            std::vector<std::string> lList;
+            if (pEnding.empty())
+            {
+                while (struct dirent* lDirEntry = readdir(lDir))
+                {
+                    lList.push_back(lDirEntry->d_name);
+                }
+            }
+            else
+            {
+                while (struct dirent* lDirEntry = readdir(lDir))
+                {
+                    std::string lEntryName = lDirEntry->d_name;
+                    if (fbu::string::hasEnding(lEntryName, pEnding))
+                    {
+                        lList.push_back(lEntryName);
+                    }
+                }
+            }
+            closedir(lDir);
+            return lList;
         }
     }
-    closedir(lDir);
-    return lList;
 }
 
 #endif
