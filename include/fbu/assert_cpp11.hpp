@@ -1,8 +1,8 @@
-#ifndef FBU_ASSERT_CPP11_HPP_INCLUDED
-#define FBU_ASSERT_CPP11_HPP_INCLUDED
+#ifndef ASSERT_CPP11_HPP_INCLUDED
+#define ASSERT_CPP11_HPP_INCLUDED
 
 /**
- @file fbu_assert_cpp11.hpp
+ @file assert_cpp11.hpp
  @author François Becker
 
 MIT License
