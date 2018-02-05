@@ -25,7 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "build_info.hpp"
+#include "fbu/build_info.hpp"
 
 static const BuildInfo gscBuildInfo = BuildInfo();
 

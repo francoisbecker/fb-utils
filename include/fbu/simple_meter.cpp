@@ -25,7 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "simple_meter.hpp"
+#include "fbu/simple_meter.hpp"
 
 //==============================================================================
 SimpleMeter::SimpleMeter(String pName)

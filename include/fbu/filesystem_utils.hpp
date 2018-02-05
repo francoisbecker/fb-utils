@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "possible_error.hpp"
-#include "string_utils.hpp"
+#include "fbu/possible_error.hpp"
+#include "fbu/string_utils.hpp"
 
 #include <vector>
 #include <string>

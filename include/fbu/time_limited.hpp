@@ -30,9 +30,9 @@ SOFTWARE.
 
 #include "JuceHeader.h"
 
-#include "build_info.hpp"
+#include "fbu/build_info.hpp"
 
-#include "time_utils.hpp"
+#include "fbu/time_utils.hpp"
 
 /**
  @class TimeLimitedFromBuild

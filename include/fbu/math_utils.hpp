@@ -28,7 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "math_float_constants.hpp"
+#include "fbu/math_float_constants.hpp"
 
 #include <algorithm>
 #include <cstdint>

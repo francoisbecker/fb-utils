@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include "JuceHeader.h"
 
-#include "math_float_constants.hpp"
+#include "fbu/math_float_constants.hpp"
 
 /**
  @class ElevationRotary
