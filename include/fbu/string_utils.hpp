@@ -46,6 +46,15 @@ namespace fbu
             }
         }
         
+        inline std::vector<std::string> string_split(const std::string& pString, char pSplitChar)
+        {
+            std::istringstream split(pString);
+            std::vector<std::string> tokens;
+            for (std::string each; std::getline(split, each, pSplitChar); tokens.push_back(each));
+            
+            return tokens;
+        }
+        
         //==============================================================================
         inline std::vector<std::string> string_split(std::string pString, const char* pDelimiter)
         {
