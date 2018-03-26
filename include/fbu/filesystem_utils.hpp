@@ -7,7 +7,7 @@
 
 MIT License
 
-Copyright (c) 2017 François Becker
+Copyright (c) 2017-2018 François Becker
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <vector>
 #include <string>
+#include <regex>
 
 #include <dirent.h>
 
@@ -79,6 +80,22 @@ namespace fbu
             }
             closedir(lDir);
             return lList;
+        }
+        
+        //==============================================================================
+        // POSIX portable filename:
+        // - not empty, alphanumeric plus . _ -
+        // - the first character must not be an hyphen ("-").
+        // - unicity: case-insensitive.
+        inline bool isPOSIXPortableFileName(const char* pFileName)
+        {
+            std::regex r("[a-zA-Z0-9._][a-zA-Z0-9._\\-]*");
+            assert(std::regex_match("ehfindjfqnsdl872394kfnlze", r));
+            assert(std::regex_match("._djfqklsdf-dksfqshdjfkl6736824_sdfhjslf.dfnsjdlf.skfhdls", r));
+            assert(!std::regex_match("", r));
+            assert(!std::regex_match("-hyphen.begin", r));
+            assert(!std::regex_match("/test", r));
+            return std::regex_match(pFileName, r);
         }
     }
 }
