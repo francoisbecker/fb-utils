@@ -83,20 +83,30 @@ namespace fbu
         }
         
         //==============================================================================
-        // POSIX portable filename:
-        // - not empty, alphanumeric plus . _ -
+        // POSIX fully portable filename:
+        // - alphanumeric plus . _ -
         // - the first character must not be an hyphen ("-").
+        // - must not be empty
+        // - must not be "." nor ".."
         // - unicity: case-insensitive.
-        inline bool isPOSIXPortableFileName(const char* pFileName)
+        // ref: https://en.wikipedia.org/wiki/Filename
+        inline bool isPOSIXFullyPortableFileName(const char* pFileName)
         {
+            if (std::string(pFileName) == "." || std::string(pFileName) == "..")
+            {
+                return false;
+            }
             std::regex r("[a-zA-Z0-9._][a-zA-Z0-9._\\-]*");
-            assert(std::regex_match("ehfindjfqnsdl872394kfnlze", r));
-            assert(std::regex_match("._djfqklsdf-dksfqshdjfkl6736824_sdfhjslf.dfnsjdlf.skfhdls", r));
-            assert(!std::regex_match("", r));
-            assert(!std::regex_match("-hyphen.begin", r));
-            assert(!std::regex_match("/test", r));
             return std::regex_match(pFileName, r);
         }
+#if 0
+        // TODO FIXME: create a unit test for this
+        assert(std::regex_match("ehfindjfqnsdl872394kfnlze", r));
+        assert(std::regex_match("._djfqklsdf-dksfqshdjfkl6736824_sdfhjslf.dfnsjdlf.skfhdls", r));
+        assert(!std::regex_match("", r));
+        assert(!std::regex_match("-hyphen.begin", r));
+        assert(!std::regex_match("/test", r));
+#endif
     }
 }
 
