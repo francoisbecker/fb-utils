@@ -42,7 +42,7 @@ class TimeLimitedFromBuild
 {
 public:
     TimeLimitedFromBuild()
-    : mLimit(tu::timeFromStringDate(getBuildInfo().mDate.c_str()) + DAYSAFTERBUILD * 24 * 3600)
+    : mLimit(tu::timeFromStringDate(fbu::getBuildInfo().mDate.c_str()) + DAYSAFTERBUILD * 24 * 3600)
     , mIsOutdatedCached(isOutdated())
     {
     }
