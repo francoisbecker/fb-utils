@@ -27,7 +27,15 @@ SOFTWARE.
 
 #include "fbu/build_info.hpp"
 
-static const BuildInfo gscBuildInfo = BuildInfo();
+namespace fbu
+{
+    namespace
+    {
+        const fbu::BuildInfo gscBuildInfo = fbu::BuildInfo();
+    }
+}
+
+using namespace fbu;
 
 //==============================================================================
 BuildInfo::BuildInfo()
@@ -47,7 +55,7 @@ BuildInfo::BuildInfo()
 }
 
 //==============================================================================
-const BuildInfo& getBuildInfo()
+const BuildInfo& fbu::getBuildInfo()
 {
     return gscBuildInfo;
 }

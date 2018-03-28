@@ -30,15 +30,18 @@ SOFTWARE.
 
 #include <string>
 
-struct BuildInfo
+namespace fbu
 {
-    BuildInfo();
-    std::string mDate;
-    std::string mTime;
-    std::string mRelease;
-    //std::string mGitHash;
-};
+    struct BuildInfo
+    {
+        BuildInfo();
+        std::string mDate;
+        std::string mTime;
+        std::string mRelease;
+        //std::string mGitHash;
+    };
 
-const BuildInfo& getBuildInfo();
+    const BuildInfo& getBuildInfo();
+}
 
 #endif
