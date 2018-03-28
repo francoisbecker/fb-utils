@@ -28,7 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "assert_cpp11.hpp"
+#include "fbu/assert_cpp11.hpp"
 
 #if __cplusplus >= 201703L
 #warning "For C++17 and later, use std::shared_mutex instead of fbu::ReadWriteMutex"
