@@ -99,14 +99,6 @@ namespace fbu
             std::regex r("[a-zA-Z0-9._][a-zA-Z0-9._\\-]*");
             return std::regex_match(pFileName, r);
         }
-#if 0
-        // TODO FIXME: create a unit test for this
-        assert(std::regex_match("ehfindjfqnsdl872394kfnlze", r));
-        assert(std::regex_match("._djfqklsdf-dksfqshdjfkl6736824_sdfhjslf.dfnsjdlf.skfhdls", r));
-        assert(!std::regex_match("", r));
-        assert(!std::regex_match("-hyphen.begin", r));
-        assert(!std::regex_match("/test", r));
-#endif
     }
 }
 
