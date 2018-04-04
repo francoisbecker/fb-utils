@@ -32,6 +32,9 @@ SOFTWARE.
 
 #include <cassert>
 
+namespace fbu
+{
+    
 template <typename E>
 struct Error
 {
@@ -67,5 +70,7 @@ struct PossibleError
         return mValue;
     }
 };
+    
+}
 
 #endif

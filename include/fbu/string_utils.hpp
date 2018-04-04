@@ -84,10 +84,17 @@ namespace fbu
         };
         
         //==============================================================================
-        inline bool hasEnding(const std::string& fullString, const std::string& ending)
+        inline bool beginsWith(const std::string& pFullString, const std::string& pRoot)
         {
-            return (fullString.length() >= ending.length())
-            && (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+            return (pFullString.size() >= pRoot.size())
+            && equal(pRoot.begin(), pRoot.end(), pFullString.begin());
+        }
+        
+        //==============================================================================
+        inline bool endsWith(const std::string& pFullString, const std::string& pEnding)
+        {
+            return (pFullString.length() >= pEnding.length())
+            && (0 == pFullString.compare (pFullString.length() - pEnding.length(), pEnding.length(), pEnding));
         }
         
         //==============================================================================

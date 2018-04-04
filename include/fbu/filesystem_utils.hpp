@@ -52,6 +52,7 @@ namespace fbu
 #endif
         
         //==============================================================================
+        // TODO: use regex instead, add optional argument for sorting the results
         inline PossibleError<std::vector<std::string> > listDir(const std::string& pPath, const std::string& pEnding = "")
         {
             DIR* lDir = opendir(pPath.c_str());
@@ -72,7 +73,7 @@ namespace fbu
                 while (struct dirent* lDirEntry = readdir(lDir))
                 {
                     std::string lEntryName = lDirEntry->d_name;
-                    if (fbu::string::hasEnding(lEntryName, pEnding))
+                    if (fbu::string::endsWith(lEntryName, pEnding))
                     {
                         lList.push_back(lEntryName);
                     }
@@ -80,6 +81,25 @@ namespace fbu
             }
             closedir(lDir);
             return lList;
+        }
+        
+        //==============================================================================
+        // TODO: optional argument about alphabetical order
+        inline PossibleError<std::string> pathForFileWithRootInDir(const std::string& pDir, const std::string& pFileNameRoot)
+        {
+            auto lList = fbu::filesystem::listDir(pDir);
+            if (lList.hasError())
+            {
+                return error(lList.mError);
+            }
+            for (const auto& e : lList())
+            {
+                if (fbu::string::beginsWith(e, pFileNameRoot))
+                {
+                    return pDir + fbu::filesystem::separator + e;
+                }
+            }
+            return error(ENOENT);
         }
         
         //==============================================================================
