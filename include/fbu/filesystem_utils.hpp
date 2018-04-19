@@ -34,12 +34,13 @@ SOFTWARE.
 #include <vector>
 #include <string>
 #include <regex>
+#include <fstream>
 
 #include <dirent.h>
 
 namespace fbu
 {
-    namespace filesystem
+    namespace fs
     {
         //==============================================================================
         /**
@@ -87,7 +88,7 @@ namespace fbu
         // TODO: optional argument about alphabetical order
         inline PossibleError<std::string> pathForFileWithRootInDir(const std::string& pDir, const std::string& pFileNameRoot)
         {
-            auto lList = fbu::filesystem::listDir(pDir);
+            auto lList = listDir(pDir);
             if (lList.hasError())
             {
                 return error(lList.mError);
@@ -96,7 +97,7 @@ namespace fbu
             {
                 if (fbu::string::beginsWith(e, pFileNameRoot))
                 {
-                    return pDir + fbu::filesystem::separator + e;
+                    return pDir + separator + e;
                 }
             }
             return error(ENOENT);
@@ -119,7 +120,37 @@ namespace fbu
             std::regex r("[a-zA-Z0-9._][a-zA-Z0-9._\\-]*");
             return std::regex_match(pFileName, r);
         }
+        
+        //==============================================================================
+        inline bool setFileContents(const char* pFileName, const char* pContents)
+        {
+            std::ofstream lFile;
+            lFile.open(pFileName, std::ofstream::trunc);
+            if (!lFile.is_open())
+            {
+                return false;
+            }
+            lFile << pContents;
+            lFile.close();
+            return true;
+        }
+        
+        //==============================================================================
+        inline PossibleError<std::string> getFileContents(const char* pFileName)
+        {
+            std::ifstream lFile;
+            lFile.open(pFileName);
+            if (!lFile.is_open())
+            {
+                return error(errno);
+            }
+            std::string lContents { std::istreambuf_iterator<char>(lFile), std::istreambuf_iterator<char>() };
+            lFile.close();
+            return lContents;
+        }
     }
+    
+    namespace filesystem = fs;
 }
 
 #endif

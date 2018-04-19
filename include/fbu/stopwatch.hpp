@@ -130,4 +130,23 @@ public:
     }
 };
 
+/**
+ @class StopWatchScoped
+ @brief A StopWatch that is started as soon as it is instantiated and stopped
+ as soon as the scope ends. The result is then displayed.
+ */
+class StopWatchScoped
+: public StopWatchStarted
+{
+public:
+    StopWatchScoped(const std::string& pName = "")
+    : StopWatchStarted(pName)
+    {
+    }
+    ~StopWatchScoped()
+    {
+        stopAndDisplay();
+    }
+};
+
 #endif
