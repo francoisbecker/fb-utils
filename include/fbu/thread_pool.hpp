@@ -58,10 +58,10 @@ public:
      */
     ThreadPool(int pNumThreads = 0)
     : mThreads(pNumThreads != 0
-               ? pNumThreads
+               ? (unsigned)pNumThreads
                : (std::thread::hardware_concurrency() != 0
                   ? std::thread::hardware_concurrency()
-                  : 2))
+                  : 2u))
     , mTerminate(false)
     {
         for (std::thread& t : mThreads)
@@ -102,7 +102,7 @@ public:
     void waitForCompletion()
     {
         std::unique_lock<std::mutex> lLock(mJobsQueueMutex);
-        while (mJobsQueue.size() > 0 && mNumBusyThreads > 0)
+        while (mJobsQueue.size() > 0 || mNumBusyThreads > 0)
         {
             mCompletionCV.wait(lLock);
         }
