@@ -7,7 +7,7 @@
  
 MIT License
 
-Copyright (c) 2015-2017 François Becker
+Copyright (c) 2015-2018 François Becker
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -471,6 +471,30 @@ namespace mu
             }
         }
     }
+
+    //==============================================================================
+    template <class T = float>
+    class CumulAverage
+    {
+    public:
+        CumulAverage() {}
+        void push(T pValue)
+        {
+            mCumul += pValue;
+            ++mCount;
+        }
+        float getCount() const
+        {
+            return mCount;
+        }
+        float get() const
+        {
+            assert(mCount != 0);
+            return mCumul / (float)mCount;
+        }
+        T mCumul = (T)0.;
+        int mCount = 0;
+    };
 }
 
 #endif
