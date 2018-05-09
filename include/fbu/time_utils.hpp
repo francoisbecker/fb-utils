@@ -28,59 +28,68 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include <chrono>
 #include <ctime>
 #include <cstdio>
 #include <cstring>
 #include <cassert>
 
-namespace tu
+namespace fbu
 {
-    inline std::time_t timeFromYMDString(const char* pString)
+    namespace time
     {
-        // Time from YYYY-MM-DD
-        int lYear, lMonth, lDay;
-        sscanf(pString, "%d-%d-%d", &lYear, &lMonth, &lDay);
-        struct tm t = {0};
-        t.tm_year = lYear - 1900;
-        t.tm_mon = lMonth - 1;
-        t.tm_mday = lDay;
-        t.tm_isdst = -1;
-        return mktime(&t);
-    }
+        inline std::time_t timeFromYMDString(const char* pString)
+        {
+            // Time from YYYY-MM-DD
+            int lYear, lMonth, lDay;
+            sscanf(pString, "%d-%d-%d", &lYear, &lMonth, &lDay);
+            struct tm t = {0};
+            t.tm_year = lYear - 1900;
+            t.tm_mon = lMonth - 1;
+            t.tm_mday = lDay;
+            t.tm_isdst = -1;
+            return mktime(&t);
+        }
+        
+        inline std::time_t timeFromYMDHMSString(const char* pString)
+        {
+            // Time from YYYY-mm-DD HH:MM:SS
+            int lYear, lMonth, lDay, lHour, lMinute, lSecond;
+            sscanf(pString, "%d-%d-%d %d:%d:%d", &lYear, &lMonth, &lDay, &lHour, &lMinute, &lSecond);
+            struct tm t = {0};
+            t.tm_year = lYear - 1900;
+            t.tm_mon = lMonth - 1;
+            t.tm_mday = lDay;
+            t.tm_hour = lHour;
+            t.tm_min = lMinute;
+            t.tm_sec = lSecond;
+            t.tm_isdst = -1;
+            return mktime(&t);
+        }
+        
+        inline std::time_t timeFromStringDate(const char *time)
+        {
+            char s_month[5];
+            int month, day, year;
+            struct tm t = {0};
+            static const char month_names[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
+            
+            sscanf(time, "%s %d %d", s_month, &day, &year);
+            
+            month = (int)(strstr(month_names, s_month)-month_names)/3;
+            
+            t.tm_mon = month;
+            t.tm_mday = day;
+            t.tm_year = year - 1900;
+            t.tm_isdst = -1;
+            
+            return mktime(&t);
+        }
     
-    inline std::time_t timeFromYMDHMSString(const char* pString)
-    {
-        // Time from YYYY-mm-DD HH:MM:SS
-        int lYear, lMonth, lDay, lHour, lMinute, lSecond;
-        sscanf(pString, "%d-%d-%d %d:%d:%d", &lYear, &lMonth, &lDay, &lHour, &lMinute, &lSecond);
-        struct tm t = {0};
-        t.tm_year = lYear - 1900;
-        t.tm_mon = lMonth - 1;
-        t.tm_mday = lDay;
-        t.tm_hour = lHour;
-        t.tm_min = lMinute;
-        t.tm_sec = lSecond;
-        t.tm_isdst = -1;
-        return mktime(&t);
-    }
-    
-    inline std::time_t timeFromStringDate(const char *time)
-    {
-        char s_month[5];
-        int month, day, year;
-        struct tm t = {0};
-        static const char month_names[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
-        
-        sscanf(time, "%s %d %d", s_month, &day, &year);
-        
-        month = (int)(strstr(month_names, s_month)-month_names)/3;
-        
-        t.tm_mon = month;
-        t.tm_mday = day;
-        t.tm_year = year - 1900;
-        t.tm_isdst = -1;
-        
-        return mktime(&t);
+        inline long long secondsSinceEpoch()
+        {
+            return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        }
     }
 }
 
