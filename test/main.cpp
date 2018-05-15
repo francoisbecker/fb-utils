@@ -22,6 +22,9 @@ CASE( "A failing test" "[fail]" )
 
 int main(int argc, char* argv[])
 {
-    return lest::run( specification(), argc, argv /*, std::cout */ );
+    std::cout << "Running fb-utils tests..." << std::endl;
+    auto lReturn = lest::run( specification(), argc, argv /*, std::cout */ );
+    std::cout << "Done." << std::endl;
+    return lReturn;
 }
 
