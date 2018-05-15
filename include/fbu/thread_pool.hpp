@@ -63,6 +63,7 @@ public:
                   ? std::thread::hardware_concurrency()
                   : 2u))
     , mTerminate(false)
+    , mNumBusyThreads(0)
     {
         for (std::thread& t : mThreads)
         {
@@ -83,6 +84,7 @@ public:
         {
             t.join();
         }
+        assert(mNumBusyThreads == 0);
     }
     
     /**
@@ -108,6 +110,16 @@ public:
         }
     }
     
+    size_t getNumThreads() const
+    {
+        return mThreads.size();
+    }
+    
+    int getNumBusyThreads() const
+    {
+        return mNumBusyThreads;
+    }
+
 private:
     void threadExecLoop()
     {
@@ -125,7 +137,7 @@ private:
         std::function<void(void)> lJob;
         std::unique_lock<std::mutex> lLock(mJobsQueueMutex);
         
-        mJobAvailableCV.wait(lLock, [this]() -> bool { return mJobsQueue.size() || mTerminate; });
+        mJobAvailableCV.wait(lLock, [this]() -> bool { return (mJobsQueue.size() > 0) || mTerminate; });
         
         ++mNumBusyThreads;
         if (!mTerminate)
