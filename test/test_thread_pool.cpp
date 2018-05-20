@@ -7,7 +7,7 @@
 CASE("Thread Pool")
 {
     {
-        ThreadPool lTP(0);
+        fbu::ThreadPool lTP(0);
         EXPECT(lTP.getNumThreads() > 0u);
         EXPECT(lTP.getNumBusyThreads() == 0);
         lTP.waitForCompletion();
@@ -15,7 +15,7 @@ CASE("Thread Pool")
     }
     
     {
-        ThreadPool lTP(1);
+        fbu::ThreadPool lTP(1);
         EXPECT(lTP.getNumThreads() == 1u);
         EXPECT(lTP.getNumBusyThreads() == 0);
         lTP.waitForCompletion();
@@ -23,7 +23,7 @@ CASE("Thread Pool")
     }
     
     {
-        ThreadPool lTP(3);
+        fbu::ThreadPool lTP(3);
         EXPECT(lTP.getNumThreads() == 3u);
         EXPECT(lTP.getNumBusyThreads() == 0);
         lTP.waitForCompletion();
@@ -31,7 +31,7 @@ CASE("Thread Pool")
     }
     
     {
-        ThreadPool lTP(10);
+        fbu::ThreadPool lTP(10);
         std::atomic_int lCounter(0);
         auto lFunction = [&lCounter]() {
             std::mt19937 lRandomGenerator;
@@ -52,8 +52,8 @@ CASE("Thread Pool")
     }
     
     {
-        ThreadPool lTP;
-        ThreadPoolJobsExecutor lTPJE(lTP);
+        fbu::ThreadPool lTP;
+        fbu::ThreadPoolJobsExecutor lTPJE(lTP);
         std::atomic_int lCounter2(0);
         auto lFunction = [&lCounter2]() {
             std::mt19937 lRandomGenerator;

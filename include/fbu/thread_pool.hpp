@@ -32,6 +32,9 @@ SOFTWARE.
 #include <vector>
 #include <list>
 
+namespace fbu
+{
+
 /**
  @class ThreadPool
  @brief A simple ThreadPool class that is instantiated with a fixed number of
@@ -205,5 +208,7 @@ private:
     std::condition_variable mCompletion;
     std::atomic_int mNumJobs;
 };
+
+}
 
 #endif
