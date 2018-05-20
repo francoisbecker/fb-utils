@@ -153,4 +153,57 @@ private:
     }
 };
 
+/**
+ @class ThreadPoolJobsExecutor
+ @brief Manages a list of jobs given to a ThreadPool while allowing to wait for
+        all jobs that have been passed through this object to be completed.
+ */
+class ThreadPoolJobsExecutor
+{
+public:
+    /**
+     Constructor.
+     @param pTP The ThreadPool to use.
+     */
+    ThreadPoolJobsExecutor(ThreadPool& pTP)
+    : mTP(pTP)
+    , mNumJobs(0)
+    {
+    }
+    
+    /**
+     Add a job.
+     */
+    void addJob(std::function<void(void)> pJob)
+    {
+        {
+            std::unique_lock<std::mutex>(mMutex);
+            ++mNumJobs;
+        }
+        mTP.addJob([this, pJob](){
+            pJob();
+            {
+                std::unique_lock<std::mutex>(mMutex);
+                --mNumJobs;
+            }
+            mCompletion.notify_all();
+        });
+    }
+    
+    /**
+     Wait for all the jobs given to the ThreadPool through this object to be completed.
+     */
+    void waitForCompletion()
+    {
+        std::unique_lock<std::mutex> lLock(mMutex);
+        mCompletion.wait(lLock, [&](){ return mNumJobs == 0; });
+    }
+    
+private:
+    ThreadPool& mTP;
+    std::mutex mMutex;
+    std::condition_variable mCompletion;
+    std::atomic_int mNumJobs;
+};
+
 #endif
