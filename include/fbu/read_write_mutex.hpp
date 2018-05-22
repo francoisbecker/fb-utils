@@ -35,6 +35,7 @@ SOFTWARE.
 #endif
 
 #include <mutex>
+#include <atomic>
 
 namespace fbu
 {
@@ -51,11 +52,18 @@ namespace fbu
         std::mutex mMutex;
         std::condition_variable mReadingAllowed;
         std::condition_variable mWritingAllowed;
-        size_t mReadLocked = 0;
-        size_t mWriteWaiting = 0; // when not equal to 0: prevents readers to acquire it as long as there is a waiting write.
-        bool mWriteLocked = false;
+        std::atomic_uint mReadLocked;
+        std::atomic_uint mWriteWaiting; //< when not equal to 0: prevents readers to acquire it as long as there is a waiting write.
+        std::atomic_bool mWriteLocked;
 
     public:
+        ReadWriteMutex()
+        : mReadLocked(0u)
+        , mWriteWaiting(0u)
+        , mWriteLocked(false)
+        {
+        }
+        
         /**
          Read lock
         */
