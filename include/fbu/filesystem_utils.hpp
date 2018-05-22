@@ -148,6 +148,13 @@ namespace fbu
             lFile.close();
             return lContents;
         }
+        
+        //=============================================================================
+        inline bool fileIsReadable(const char* pFilePath)
+        {
+            std::ifstream lIFS(pFilePath);
+            return lIFS.good();
+        }
     }
     
     namespace filesystem = fs;
