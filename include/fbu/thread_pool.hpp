@@ -31,6 +31,10 @@ SOFTWARE.
 #include <thread>
 #include <vector>
 #include <list>
+#include <sstream>
+#if __APPLE__
+#include <pthread.h>
+#endif
 
 namespace fbu
 {
@@ -58,8 +62,9 @@ public:
      automatic guess of the number of concurrent threads supported by the
      hardware platform. If it can't be determined at runtime, a default number
      of 2 threads is considered.
+     @param pName The name to give to the threads, as a prefix followed by a number.
      */
-    ThreadPool(int pNumThreads = 0)
+    ThreadPool(int pNumThreads = 0, const std::string& pName = "fbu::ThreadPool")
     : mThreads(pNumThreads != 0
                ? (unsigned)pNumThreads
                : (std::thread::hardware_concurrency() != 0
@@ -68,9 +73,19 @@ public:
     , mTerminate(false)
     , mNumBusyThreads(0)
     {
+        int i = 0;
         for (std::thread& t : mThreads)
         {
-            t = std::thread([this]{ this->threadExecLoop(); });
+            std::string lThreadName = (std::ostringstream() << pName << " " << i).str();
+            t = std::thread([this, lThreadName]{
+#if __APPLE__
+                pthread_setname_np(lThreadName.c_str());
+#else
+#pragma message("Thread name not implemented on this platform yet")
+#endif
+                this->threadExecLoop();
+            });
+            ++i;
         }
     }
     
