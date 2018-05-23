@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include <thread>
 #include <vector>
-#include <list>
+#include <queue>
 #include <sstream>
 #if __APPLE__
 #include <pthread.h>
@@ -52,7 +52,7 @@ class ThreadPool
     std::atomic_int mNumBusyThreads;
     std::condition_variable mJobAvailableCV;
     std::condition_variable mCompletionCV;
-    std::list< std::function<void(void)> > mJobsQueue;
+    std::queue< std::function<void(void)> > mJobsQueue;
     std::mutex mJobsQueueMutex;
     
 public:
@@ -111,7 +111,7 @@ public:
     void addJob(std::function<void(void)> pJob)
     {
         std::lock_guard<std::mutex> lGuard(mJobsQueueMutex);
-        mJobsQueue.emplace_back(pJob);
+        mJobsQueue.push(pJob);
         mJobAvailableCV.notify_one();
     }
     
@@ -161,7 +161,7 @@ private:
         if (!mTerminate)
         {
             lJob = mJobsQueue.front();
-            mJobsQueue.pop_front();
+            mJobsQueue.pop();
         }
         else
         {
