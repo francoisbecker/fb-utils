@@ -1,6 +1,4 @@
-#include "lest.hpp"
-
-#define CASE( name ) lest_CASE( specification, name )
+#include "tests_common.hpp"
 
 lest::tests& specification()
 {
