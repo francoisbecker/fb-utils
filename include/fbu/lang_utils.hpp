@@ -58,6 +58,29 @@ namespace fbu
         };
         
         template <typename T>
+        class OnCopy
+        {
+        public:
+            explicit OnCopy(T&& pCopy)
+            : mCopy(std::forward<T>(pCopy))
+            {
+            }
+            ~OnCopy() = default;
+            OnCopy(const OnCopy& pOther)
+            {
+                pOther.mCopy();
+                mCopy = pOther.mCopy;
+            }
+            OnCopy& operator=(const OnCopy& pOther)
+            {
+                pOther.mCopy();
+                mCopy = pOther.mCopy;
+            }
+            T mCopy;
+        };
+        typedef OnCopy< std::function<void()> > OnCopyFunction;
+        
+        template <typename T>
         class ScopeExit
         : NonCopyable
         , NonMovable
