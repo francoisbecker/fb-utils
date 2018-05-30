@@ -43,7 +43,7 @@ namespace fbu
             // Time from YYYY-MM-DD
             int lYear, lMonth, lDay;
             sscanf(pString, "%d-%d-%d", &lYear, &lMonth, &lDay);
-            struct tm t = {0};
+            struct tm t = {};
             t.tm_year = lYear - 1900;
             t.tm_mon = lMonth - 1;
             t.tm_mday = lDay;
@@ -56,7 +56,7 @@ namespace fbu
             // Time from YYYY-mm-DD HH:MM:SS
             int lYear, lMonth, lDay, lHour, lMinute, lSecond;
             sscanf(pString, "%d-%d-%d %d:%d:%d", &lYear, &lMonth, &lDay, &lHour, &lMinute, &lSecond);
-            struct tm t = {0};
+            struct tm t = {};
             t.tm_year = lYear - 1900;
             t.tm_mon = lMonth - 1;
             t.tm_mday = lDay;
@@ -71,7 +71,7 @@ namespace fbu
         {
             char s_month[5];
             int month, day, year;
-            struct tm t = {0};
+            struct tm t = {};
             static const char month_names[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
             
             sscanf(time, "%s %d %d", s_month, &day, &year);
