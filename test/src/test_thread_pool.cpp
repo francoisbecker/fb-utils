@@ -1,5 +1,7 @@
 #include "fbu/thread_pool.hpp"
 
+#include "fbu/lang_utils.hpp"
+
 #include "tests_common.hpp"
 
 #include <random>
@@ -53,7 +55,7 @@ CASE("Thread Pool: 10 threads busy, 100 jobs, and wait for completion")
     EXPECT(lCounter == 100);
 }
 
-CASE("Thread Pool: ThreadPoolJobsExecutor")
+CASE("ThreadPoolJobsExecutor")
 {
     fbu::ThreadPool lTP;
     fbu::ThreadPoolJobsExecutor lTPJE(lTP);
@@ -73,4 +75,32 @@ CASE("Thread Pool: ThreadPoolJobsExecutor")
     lTPJE.waitForCompletion();
     EXPECT(lTP.getNumBusyThreads() == 0);
     EXPECT(lCounter2 == lNum);
+}
+
+CASE("ThreadPoolJobsExecutor: reference capture does not copy")
+{
+    fbu::ThreadPool lTP;
+    fbu::ThreadPoolJobsExecutor lTPJE(lTP);
+    std::atomic_int lCopyCount;
+    std::atomic_int lRunCount;
+    lCopyCount = 0;
+    lRunCount = 0;
+    struct Object : public fbu::lang::OnCopyFunction {
+        Object(std::atomic_int& pCopyCount)
+        : fbu::lang::OnCopyFunction([&](){ ++pCopyCount; })
+        {}
+        void doSomething(std::atomic_int& pRunCount)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            ++pRunCount;
+        }
+    };
+    Object lObject(lCopyCount);
+    for (int i = 0 ; i != 10 ; ++i)
+    {
+        lTPJE.addJob([&lObject, &lRunCount](){ lObject.doSomething(lRunCount); });
+    }
+    lTPJE.waitForCompletion();
+    EXPECT(lCopyCount == 0);
+    EXPECT(lRunCount == 10);
 }
