@@ -89,7 +89,7 @@ private:
         {
             if (lIsCreator)
             {
-                if (ftruncate(mFD, mSize) < 0)
+                if (ftruncate(mFD, (off_t)mSize) < 0)
                 {
                     //std::cerr << strerror(errno) << std::endl;
                     return;

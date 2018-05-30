@@ -4,6 +4,8 @@
 
 CASE( "fbu::ReadWriteMutex multiple reads" )
 {
+    EXPECT( true ); // suppresses the compiler warning about unused parameter 'lest_env'
+    
     fbu::ReadWriteMutex lRWMutex;
     
     {
