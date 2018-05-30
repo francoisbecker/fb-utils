@@ -101,6 +101,7 @@ namespace fbu
         void unlock_shared()
         {
             std::unique_lock<std::mutex> lMonitor(mMutex);
+            assert(mReadLocked != 0);
             --mReadLocked;
             if (mReadLocked == 0)
             {
@@ -148,6 +149,7 @@ namespace fbu
         void unlock()
         {
             std::unique_lock<std::mutex> lMonitor(mMutex);
+            assert(mWriteLocked);
             mWriteLocked = false;
             if (mWriteWaiting != 0)
             {

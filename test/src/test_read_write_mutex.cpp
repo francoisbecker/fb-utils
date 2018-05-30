@@ -34,6 +34,5 @@ CASE( "fbu::ReadWriteMutex multiple reads, try write lock" )
         fbu::ReadLock lRL1(lRWMutex);
         fbu::ReadLock lRL2(lRWMutex);
         EXPECT(! lRWMutex.try_lock());
-        lRWMutex.unlock();
     }
 }
