@@ -97,7 +97,7 @@ namespace fbu
         {
             std::unique_lock<std::mutex> lMonitor(mMutex);
             ++mWriteWaiting;
-            while (mWriteLocked && mReadLocked != 0)
+            while (mWriteLocked || mReadLocked != 0)
             {
                 mWritingAllowed.wait(lMonitor);
             }
