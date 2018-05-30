@@ -44,7 +44,6 @@ namespace fbu
      Warning: if too many threads try to writelock this, reader threads might be blocked.
      This tries to follow the SharedMutex concept: http://en.cppreference.com/w/cpp/concept/SharedMutex
      @todo: implement unit tests.
-     @todo: implement bool try_lock_shared & try_lock().
      @todo: check whether "All lock and unlock operations on a single mutex occur in a single total order" is valid.
      */
     class ReadWriteMutex
@@ -76,6 +75,25 @@ namespace fbu
             }
             ++mReadLocked;
         }
+        
+        /**
+         Try read lock
+         @return  true if the read lock has been acquired, false otherwise.
+         */
+        bool try_lock_shared()
+        {
+            std::unique_lock<std::mutex> lMonitor(mMutex, std::try_to_lock);
+            if (!lMonitor.owns_lock())
+            {
+                return false;
+            }
+            if (mWriteLocked || mWriteWaiting != 0)
+            {
+                return false;
+            }
+            ++mReadLocked;
+            return true;
+        }
 
         /**
          Read unlock
@@ -103,6 +121,25 @@ namespace fbu
             }
             mWriteLocked = true;
             --mWriteWaiting;
+        }
+        
+        /**
+         Try write lock
+         @return  true if the write lock has been acquired, false otherwise.
+         */
+        bool try_lock()
+        {
+            std::unique_lock<std::mutex> lMonitor(mMutex, std::try_to_lock);
+            if (!lMonitor.owns_lock())
+            {
+                return false;
+            }
+            if (mWriteLocked || mReadLocked != 0)
+            {
+                return false;
+            }
+            mWriteLocked = true;
+            return true;
         }
 
         /**
