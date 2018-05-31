@@ -106,10 +106,10 @@ public:
     /**
      Add a job.
      */
-    void addJob(std::function<void(void)> pJob)
+    void addJob(std::function<void(void)>&& pJob)
     {
         std::lock_guard<std::mutex> lGuard(mJobsQueueMutex);
-        mJobsQueue.push(pJob);
+        mJobsQueue.push(std::move(pJob));
         mJobAvailableCV.notify_one();
     }
     
@@ -162,7 +162,7 @@ private:
         if (!mTerminate)
         {
             assert(!mJobsQueue.empty());
-            lJob = mJobsQueue.front();
+            lJob = std::move(mJobsQueue.front());
             mJobsQueue.pop();
         }
         else
@@ -190,17 +190,37 @@ public:
     {
     }
     
+    template <typename T>
+    struct CaptureWrapper
+    {
+        CaptureWrapper(T&& pValue) : mValue(std::move(pValue)) {}
+        CaptureWrapper(const CaptureWrapper& other) : mValue(std::move(other.mValue)) {}
+        
+        mutable T mValue;
+        
+    private:
+        CaptureWrapper& operator=(CaptureWrapper&& pValue) = delete;
+        CaptureWrapper& operator=(const CaptureWrapper& pValue) = delete;
+    };
+    
+    template<typename T>
+    CaptureWrapper<T> make_CaptureWrapper(T&& pValue)
+    {
+        return CaptureWrapper<T>(std::move(pValue));
+    };
+    
     /**
      Add a job.
      */
-    void addJob(std::function<void(void)> pJob)
+    void addJob(std::function<void(void)>&& pJob)
     {
         {
             std::unique_lock<std::mutex>(mMutex);
             ++mNumJobs;
         }
-        mTP.addJob([this, pJob](){
-            pJob();
+        auto lMovedJob = make_CaptureWrapper(std::move(pJob)); // Will not be needed anymore in C++14 thanks to move capture.
+        mTP.addJob([this, lMovedJob](){
+            lMovedJob.mValue();
             {
                 std::unique_lock<std::mutex>(mMutex);
                 --mNumJobs;
