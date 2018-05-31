@@ -143,8 +143,11 @@ private:
         {
             auto lJob = grabNextJob();
             lJob();
-            --mNumBusyThreads;
-            mCompletionCV.notify_all();
+            {
+                std::unique_lock<std::mutex> lLock(mJobsQueueMutex);
+                --mNumBusyThreads;
+                mCompletionCV.notify_all();
+            }
         }
     }
     
@@ -200,8 +203,8 @@ public:
             {
                 std::unique_lock<std::mutex>(mMutex);
                 --mNumJobs;
+                mCompletion.notify_all();
             }
-            mCompletion.notify_all();
         });
     }
     
