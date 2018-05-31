@@ -35,6 +35,7 @@ SOFTWARE.
 #if __APPLE__
 #include <pthread.h>
 #endif
+#include <fbu/lang_utils.hpp>
 
 namespace fbu
 {
@@ -177,6 +178,7 @@ private:
  @class ThreadPoolJobsExecutor
  @brief Manages a list of jobs given to a ThreadPool while allowing to wait for
         all jobs that have been passed through this object to be completed.
+ @todo deprecate, use JobCounter instead.
  */
 class ThreadPoolJobsExecutor
 {
@@ -220,6 +222,45 @@ public:
     
 private:
     ThreadPool& mTP;
+    std::mutex mMutex;
+    std::condition_variable mCompletion;
+    std::atomic_int mNumJobs{0};
+};
+
+/**
+ @class JobCounter
+ A job counter with a completion waiting method.
+ Increment prior to submitting a job to a ThreadPool.
+ Decrement at the end of the jobs after unlocking all mutexes on shared data.
+ Call waitForCompletion() for waiting for all the jobs to be finished.
+ @todo unit test.
+ */
+class JobCounter : public fbu::lang::NonCopyable
+{
+public:
+    JobCounter() {}
+    
+    void increment()
+    {
+        std::unique_lock<std::mutex> lLock(mMutex);
+        ++mNumJobs;
+    }
+    
+    void decrement()
+    {
+        std::unique_lock<std::mutex> lLock(mMutex);
+        assert(mNumJobs > 0);
+        --mNumJobs;
+        mCompletion.notify_all();
+    }
+    
+    void waitForCompletion()
+    {
+        std::unique_lock<std::mutex> lLock(mMutex);
+        mCompletion.wait(lLock, [&]{ return mNumJobs == 0; });
+    }
+    
+private:
     std::mutex mMutex;
     std::condition_variable mCompletion;
     std::atomic_int mNumJobs{0};
