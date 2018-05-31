@@ -48,8 +48,8 @@ namespace fbu
 class ThreadPool
 {
     std::vector<std::thread> mThreads;
-    std::atomic_bool mTerminate;
-    std::atomic_int mNumBusyThreads;
+    std::atomic_bool mTerminate{false};
+    std::atomic_int mNumBusyThreads{0};
     std::condition_variable mJobAvailableCV;
     std::condition_variable mCompletionCV;
     std::queue< std::function<void(void)> > mJobsQueue;
@@ -70,8 +70,6 @@ public:
                : (std::thread::hardware_concurrency() != 0
                   ? std::thread::hardware_concurrency()
                   : 2u))
-    , mTerminate(false)
-    , mNumBusyThreads(0)
     {
         int i = 0;
         for (std::thread& t : mThreads)
@@ -185,7 +183,6 @@ public:
      */
     ThreadPoolJobsExecutor(ThreadPool& pTP)
     : mTP(pTP)
-    , mNumJobs(0)
     {
     }
     
@@ -221,7 +218,7 @@ private:
     ThreadPool& mTP;
     std::mutex mMutex;
     std::condition_variable mCompletion;
-    std::atomic_int mNumJobs;
+    std::atomic_int mNumJobs{0};
 };
 
 }
