@@ -161,6 +161,7 @@ private:
         ++mNumBusyThreads;
         if (!mTerminate)
         {
+            assert(!mJobsQueue.empty());
             lJob = mJobsQueue.front();
             mJobsQueue.pop();
         }
