@@ -4,11 +4,21 @@
 
 CASE( "fbu::fs::isPOSIXFullyPortableFileName()" )
 {
-    EXPECT( fbu::fs::isPOSIXFullyPortableFileName("ehfindjfqnsdl872394kfnlze") );
-    EXPECT( fbu::fs::isPOSIXFullyPortableFileName("._djfqklsdf-dksfqshdjfkl6736824_sdfhjslf.dfnsjdlf.skfhdls") );
+    EXPECT( fbu::fs::isPOSIXFullyPortableFileName("ehfindjfqnsdl8") ); // 14 characters
+    EXPECT( ! fbu::fs::isPOSIXFullyPortableFileName("ehfindjfqnsdl872394kfnlze") ); // > 14 characters
+    EXPECT( ! fbu::fs::isPOSIXFullyPortableFileName("._djfqklsdf-dksfqshdjfkl6736824_sdfhjslf.dfnsjdlf.skfhdls") );
     EXPECT( ! fbu::fs::isPOSIXFullyPortableFileName("") );
     EXPECT( ! fbu::fs::isPOSIXFullyPortableFileName("-hyphen.begin") );
     EXPECT( ! fbu::fs::isPOSIXFullyPortableFileName("/test") );
+}
+
+CASE( "fbu::fs::isPOSIXFullyPortableFileNameRelaxed()" )
+{
+    EXPECT( fbu::fs::isPOSIXFullyPortableFileNameRelaxed("._djfqklsdf-dksfqshdjfkl6736824_sdfhjslf.dfnsjdlf.skfhdls") );
+    EXPECT( fbu::fs::isPOSIXFullyPortableFileNameRelaxed("._djfqklsd f-dksfqshdjfkl6736824_sdf hjslf.dfnsjdlf.skfh dls") );
+    EXPECT( ! fbu::fs::isPOSIXFullyPortableFileNameRelaxed("") );
+    EXPECT( ! fbu::fs::isPOSIXFullyPortableFileNameRelaxed("-hyphen.begin") );
+    EXPECT( ! fbu::fs::isPOSIXFullyPortableFileNameRelaxed("/test") );
 }
 
 CASE("fbu::fs::setFileContents() and fbu::fs::getFileContents()")

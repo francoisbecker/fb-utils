@@ -104,21 +104,41 @@ namespace fbu
         }
         
         //==============================================================================
-        // POSIX fully portable filename:
-        // - alphanumeric plus . _ -
-        // - the first character must not be an hyphen ("-").
-        // - must not be empty
-        // - must not be "." nor ".."
-        // - unicity: case-insensitive.
-        // ref: https://en.wikipedia.org/wiki/Filename
+        /**
+         * POSIX fully portable filename:
+         * - alphanumeric plus . _ -
+         * - the first character must not be an hyphen ("-").
+         * - must not be empty
+         * - must not be "." nor ".."
+         * - unicity: case-insensitive
+         * - 14 characters maximum.
+         * ref: https://en.wikipedia.org/wiki/Filename
+         */
         inline bool isPOSIXFullyPortableFileName(const char* pFileName)
         {
-            if (std::string(pFileName) == "." || std::string(pFileName) == "..")
+            std::string lFileName(pFileName);
+            if (lFileName == "." || lFileName == ".." || lFileName.length() > 14)
             {
                 return false;
             }
             std::regex r("[a-zA-Z0-9._][a-zA-Z0-9._\\-]*");
-            return std::regex_match(pFileName, r);
+            return std::regex_match(lFileName, r);
+        }
+
+        //=============================================================================
+        /**
+         * Same as isPOSIXFullyPortableFileName() with a length limit raised to 254
+         * characters with spaces permitted provided a space is not the first character.
+         */
+        inline bool isPOSIXFullyPortableFileNameRelaxed(const char* pFileName)
+        {
+            std::string lFileName(pFileName);
+            if (lFileName == "." || lFileName == ".." || lFileName.length() > 254)
+            {
+                return false;
+            }
+            std::regex r("[a-zA-Z0-9._][a-zA-Z0-9._\\-\\ ]*");
+            return std::regex_match(lFileName, r);
         }
         
         //==============================================================================
