@@ -7,7 +7,7 @@
 
 MIT License
 
-Copyright (c) 2017 François Becker
+Copyright (c) 2017-2018 François Becker
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -77,6 +77,12 @@ public:
     void stop()
     {
         mStop = std::chrono::steady_clock::now();
+    }
+    
+    float getSeconds() const
+    {
+        auto lDiff = mStop - mStart;
+        return std::chrono::duration<float, default_timeunit>(lDiff).count();
     }
     
     template <typename TIMEUNIT = default_timeunit>
