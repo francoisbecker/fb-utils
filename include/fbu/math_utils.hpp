@@ -490,7 +490,14 @@ namespace mu
         float get() const
         {
             assert(mCount != 0);
-            return mCumul / (float)mCount;
+            if (mCount != 0)
+            {
+                return mCumul / (float)mCount;
+            }
+            else
+            {
+                return 0.f;
+            }
         }
         T mCumul = (T)0.;
         int mCount = 0;
