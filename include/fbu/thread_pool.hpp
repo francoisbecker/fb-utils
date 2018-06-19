@@ -198,13 +198,13 @@ public:
     void addJob(std::function<void(void)> pJob)
     {
         {
-            std::unique_lock<std::mutex>(mMutex);
+            std::unique_lock<std::mutex> lLock(mMutex);
             ++mNumJobs;
         }
         mTP.addJob([this, pJob](){
             pJob();
             {
-                std::unique_lock<std::mutex>(mMutex);
+                std::unique_lock<std::mutex> lLock(mMutex);
                 --mNumJobs;
                 mCompletion.notify_all();
             }
