@@ -489,7 +489,6 @@ namespace mu
         }
         float get() const
         {
-            assert(mCount != 0);
             if (mCount != 0)
             {
                 return mCumul / (float)mCount;
