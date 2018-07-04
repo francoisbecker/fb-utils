@@ -34,6 +34,7 @@ SOFTWARE.
 #include <atomic>
 #include <condition_variable>
 #include <string>
+#include <type_traits>
 #if __APPLE__
 #include <pthread.h>
 #endif
@@ -109,10 +110,11 @@ public:
     /**
      Add a job.
      */
-    void addJob(std::function<void(void)> pJob)
+    template <class F>
+    void addJob(F&& pJob)
     {
         std::lock_guard<std::mutex> lGuard(mJobsQueueMutex);
-        mJobsQueue.push(pJob);
+        mJobsQueue.push(std::forward<F>(pJob));
         mJobAvailableCV.notify_one();
     }
     
@@ -165,7 +167,7 @@ private:
         if (!mTerminate)
         {
             assert(!mJobsQueue.empty());
-            lJob = mJobsQueue.front();
+            lJob.swap(mJobsQueue.front());
             mJobsQueue.pop();
         }
         else
