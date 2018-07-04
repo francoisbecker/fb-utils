@@ -31,7 +31,9 @@ SOFTWARE.
 #include <thread>
 #include <vector>
 #include <queue>
-#include <sstream>
+#include <atomic>
+#include <condition_variable>
+#include <string>
 #if __APPLE__
 #include <pthread.h>
 #endif
@@ -75,7 +77,7 @@ public:
         int i = 0;
         for (std::thread& t : mThreads)
         {
-            std::string lThreadName = (std::ostringstream() << pName << " " << i).str();
+            std::string lThreadName = pName + " " + std::to_string(i);
             t = std::thread([this, lThreadName]{
 #if __APPLE__
                 pthread_setname_np(lThreadName.c_str());
